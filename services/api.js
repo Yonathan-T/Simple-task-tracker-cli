@@ -1,0 +1,1 @@
+export const BASE_URL = `https://simple-task-api-88g5.onrender.com`;

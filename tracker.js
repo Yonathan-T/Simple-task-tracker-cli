@@ -2,7 +2,7 @@
 
 
 import { Command } from 'commander';
-import { getAllTasks, createTask, completeTask, deleteTask } from './requests/client.js'; // adjust path as needed
+import { getAllTasks, createTask, completeTask, deleteTask } from './requests/client.js'; 
 
 const program = new Command();
 

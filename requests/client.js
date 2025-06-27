@@ -9,12 +9,14 @@ export async function getAllTasks() {
 
   try {
     const res = await axios.get(`${BASE_URL}/tasks`, { responseType: 'json' });
-    spinner.succeed(chalk.green(' Tasks loaded!'));
+    
+            if (res.data.length === 0) {
+                      spinner.info(chalk.yellow('No tasks found.'));
+                 return;
+             } else {
+                 spinner.succeed(chalk.green('✅ Tasks loaded!'));
+             }
 
-    if (res.data.length === 0) {
-      console.log(chalk.yellow('No tasks found.'));
-      return;
-    }
 
     res.data.forEach(task => {
       const statusText = task.completed
@@ -36,26 +38,25 @@ export async function createTask(title) {
   try {
     const res = await axios.post(`${BASE_URL}/tasks`, { title });
     if(res.data){
-        spinner.succeed(chalk.green('✅Task created!'));
+        spinner.succeed(chalk.green('Task created!'));
     }
   } catch (err) {
     console.log(chalk.red('🤦‍♂️Error creating a task:', err.message));
   }
 }
 export async function completeTask(id) {
-    const spinner = ora(chalk.blue('Marking your task as completed'));
+const spinner = ora(chalk.blue('Marking your task as completed')).start();
      const taskId = Number(id);
     if(isNaN(taskId)){
-        console.log(chalk.red(`Please input a Number`))
+        console.log(chalk.red(`Please input a Number`));
+        return;
     }
   try {
     const res = await axios.put(`${BASE_URL}/tasks/${ taskId }`);
-    res.data.forEach(task =>{
-        console.log(
-            `${chalk.bold.yellow(strikethrough(task.id))}`
-        );
-  spinner.succeed(chalk.green(' Great job! Task completed successfully.'));
-    })
+    const task = res.data;
+    spinner.succeed(chalk.green(' Great job! Task completed successfully.'));
+console.log('\n' + chalk.yellow(strikethrough(`ID: ${task.id} —  ${task.title}`)));
+    
   } catch (err) {
 console.log(chalk.red('😔 Oops! Something went wrong while completing the task:'), err.message);
   }
@@ -68,33 +69,42 @@ export async function deleteTask(id) {
     return;
   }
 
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
+  const spinner = ora(chalk.blue('Checking task...')).start();
 
-  console.log(chalk.yellow('😏 Are you sure you want to delete this task? [Y/N]'));
+  try {
+    const res = await axios.get(`${BASE_URL}/tasks/${taskId}`); 
 
-  rl.question('> ', async (input) => {
-    const confirmation = input.trim().toUpperCase();
+    spinner.succeed(chalk.green('Task found.'));
 
-    if (confirmation === 'Y') {
-      const spinner = ora(chalk.blue('Deleting the task...')).start(); 
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
 
-      try {
-        const res = await axios.put(`${BASE_URL}/tasks/${taskId}`); 
-        spinner.succeed(chalk.green('✅ Task deleted successfully!'));
+    console.log(chalk.yellow('👀 Are you sure you want to delete this task? [Y/N]'));
 
-        console.log(`🗑️ ID: ${taskId} — ${res.data.title || 'Task removed'}`);
-      } catch (err) {
-        spinner.fail(chalk.red('❌ Error deleting task: ') + err.message);
+    rl.question('> ', async (input) => {
+      const confirmation = input.trim().toUpperCase();
+
+      if (confirmation === 'Y') {
+        const deleteSpinner = ora(chalk.blue('Deleting the task...')).start();
+        try {
+          await axios.delete(`${BASE_URL}/tasks/${taskId}`);
+          deleteSpinner.succeed(chalk.green('✅ Task deleted successfully!'));
+          console.log(`🗑 ID: ${taskId} — ${res.data.title || 'Task removed'}`);
+        } catch (err) {
+          deleteSpinner.fail(chalk.red('❌ Error deleting task: ') + err.message);
+        }
+      } else {
+        console.log(chalk.blue('🛑 Deletion cancelled.'));
       }
-    } else {
-      console.log(chalk.blue('🛑 Deletion cancelled.'));
-    }
 
-    rl.close();
-  });
+      rl.close();
+    });
+
+  } catch (err) {
+    spinner.fail(chalk.red('❌ Task not found or already deleted.'));
+  }
 }
 
 function strikethrough(text) {

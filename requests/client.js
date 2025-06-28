@@ -72,7 +72,8 @@ export async function deleteTask(id) {
   const spinner = ora(chalk.blue('Checking task...')).start();
 
   try {
-    const res = await axios.get(`${BASE_URL}/tasks/${taskId}`); 
+    const res = await axios.delete(`${BASE_URL}/tasks/${taskId}`); 
+
 
     spinner.succeed(chalk.green('Task found.'));
 

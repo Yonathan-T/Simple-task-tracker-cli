@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "tracker.js",
   "type": "module",
+  "bin": {
+    "task-tracker": "./tracker.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,6 +18,7 @@
     "chalk": "^5.4.1",
     "chalk-animation": "^2.0.3",
     "commander": "^14.0.0",
-    "ora": "^8.2.0"
+    "ora": "^8.2.0",
+    "uuid": "^11.1.0"
   }
 }

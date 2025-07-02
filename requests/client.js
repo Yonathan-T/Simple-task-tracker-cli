@@ -60,25 +60,34 @@ async function registerUser(userId) {
         return false;
     }
 }
-export async function getAllTasks() {
+export async function getAllTasks(verbose = true) {
     const spinner = ora(chalk.blue('Fetching tasks...')).start();
     try {
         const res = await axiosInstance.get('/tasks');
-        if (res.data.length === 0) {
-            spinner.succeed(chalk.green('Tasks fetched!'));
-            console.log(chalk.yellow('No tasks found.'));
-        } else {
-            spinner.succeed(chalk.green('Tasks fetched!'));
-            res.data.forEach(task => {
-                const status = task.completed ? chalk.green('Completed') : chalk.yellow('Pending');
-                console.log(`${chalk.bold(`ID: ${task.id}`)} ${task.title} [${status}]`);
-            });
+
+        spinner.succeed(chalk.green('Tasks fetched!'));
+
+        if (verbose) {
+            if (res.data.length === 0) {
+                console.log(chalk.yellow('No tasks found.'));
+            } else {
+                res.data.forEach(task => {
+                    const status = task.completed ? chalk.green('Completed') : chalk.yellow('Pending');
+                    console.log(`${chalk.bold(`ID: ${task.id}`)} ${task.title} [${status}]`);
+                });
+            }
         }
+
+        return res;
     } catch (err) {
         spinner.fail(chalk.red('Failed to fetch tasks'));
-        console.log(chalk.red('😑 Error fetching tasks:', err.response?.data?.error || err.message));
+        if (verbose) {
+            console.log(chalk.red('😑 Error fetching tasks:', err.response?.data?.error || err.message));
+        }
+        return { data: [] };
     }
 }
+
 
 export async function createTask(title) {
     const spinner = ora(chalk.blue('Creating task...')).start();
@@ -163,4 +172,48 @@ function strikeThrough(text) {
     .split('')
     .map(char => char + '\u0336')
     .join('')
+}
+
+export async function completed() {
+    const spinner = ora(chalk.blue('Checking tasks...')).start();
+    try {
+        const response = await getAllTasks(false);
+        const tasks = response.data;
+        const completedTasks = tasks.filter(task => task.completed);
+
+        if (completedTasks.length === 0) {
+            spinner.fail(chalk.red('There are no completed tasks yet'));
+        } else {
+            spinner.succeed(chalk.green('Completed tasks fetched'));
+            completedTasks.forEach(task => {
+                const status = chalk.green('Completed');
+                console.log(`${chalk.bold(`ID: ${task.id}`)} ${task.title} [${status}]`);
+            });
+        }
+    } catch (error) {
+        spinner.fail(chalk.red('Failed to fetch completed tasks'));
+        console.log(chalk.red(`Error: ${error.message}`));
+    }
+}
+
+export async function pending() {
+    const spinner = ora(chalk.blue('Checking tasks...')).start();
+    try {
+        const response = await getAllTasks(false);
+        const tasks = response.data;
+        const pendingTasks = tasks.filter(task => !task.completed);
+
+        if (pendingTasks.length === 0) {
+            spinner.fail(chalk.red('There are no pending tasks — All tasks completed!'));
+        } else {
+            spinner.succeed(chalk.green('Pending tasks fetched'));
+            pendingTasks.forEach(task => {
+                const status = chalk.yellow('Pending');
+                console.log(`${chalk.bold(`ID: ${task.id}`)} ${task.title} [${status}]`);
+            });
+        }
+    } catch (error) {
+        spinner.fail(chalk.red('Failed to fetch pending tasks'));
+        console.log(chalk.red(`Error: ${error.message}`));
+    }
 }

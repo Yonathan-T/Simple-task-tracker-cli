@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { getAllTasks, createTask, completeTask, deleteTask } from './requests/client.js'; 
+import { getAllTasks, createTask, completeTask, deleteTask, completed, pending } from './requests/client.js'; 
 import chalk from 'chalk';
 
 const program = new Command();
@@ -75,6 +75,18 @@ program
   .description('Delete the task')
   .action(async (id) => {
     await deleteTask(id);
+  });
+program
+  .command('completed')
+  .description('list all completed tasks')
+  .action(async () => {
+    await completed();
+  });
+program
+  .command('pending')
+  .description('list all pending tasks')
+  .action(async () => {
+    await pending();
   });
 
 program.parse(process.argv);

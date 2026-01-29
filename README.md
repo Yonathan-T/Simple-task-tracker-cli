@@ -12,7 +12,21 @@ A Simple command-line interface (CLI) for managing tasks, built with JavaScript 
 - Beautiful colored output and progress indicators
 - Automatic user registration and session management
 
-## 🛠 Built with
+## � Screenshots
+
+<div align="center">
+
+|                           Main Interface                           |                           Task List                           |
+| :----------------------------------------------------------------: | :-----------------------------------------------------------: |
+| <img src="screenshots/main.png" alt="Main Interface" width="400"/> | <img src="screenshots/list.png" alt="Task List" width="400"/> |
+
+|                             Completed Tasks                              |                            Delete Task                            |
+| :----------------------------------------------------------------------: | :---------------------------------------------------------------: |
+| <img src="screenshots/completed.png" alt="Completed Tasks" width="400"/> | <img src="screenshots/delete.png" alt="Delete Task" width="400"/> |
+
+</div>
+
+## �🛠 Built with
 
 - Node.js and Commander.js for CLI framework
 - Axios for HTTP requests
@@ -82,6 +96,7 @@ task-tracker list
 ```
 
 **Output:**
+
 ```
 ✔ Tasks fetched!
 ID: 1 Buy groceries [Pending]
@@ -95,6 +110,7 @@ task-tracker completed
 ```
 
 **Output:**
+
 ```
 ✔ Completed tasks fetched
 ID: 2 Complete project [Completed]
@@ -107,6 +123,7 @@ task-tracker pending
 ```
 
 **Output:**
+
 ```
 ✔ Pending tasks fetched
 ID: 1 Buy groceries [Pending]
@@ -119,6 +136,7 @@ task-tracker create "Buy groceries"
 ```
 
 **Output:**
+
 ```
 ✔ Task created!
 Buy groceries Added Successfully ✅
@@ -131,6 +149,7 @@ task-tracker complete 1
 ```
 
 **Output:**
+
 ```
 ✔ Task marked as completed!
 Task ID 1 Buy groceries (with strikethrough)
@@ -143,6 +162,7 @@ task-tracker delete 1
 ```
 
 **Output:**
+
 ```
 ✔ Task found.
 👀 Are you sure you want to delete task: Buy groceries (ID: 1)? [Y/N]
@@ -154,6 +174,7 @@ task-tracker delete 1
 ## 🔧 First Time Setup
 
 When you run any command for the first time, the CLI will:
+
 1. Automatically create a unique user ID for you
 2. Register you with the backend API
 3. Store your user ID locally for future sessions
@@ -164,16 +185,19 @@ When you run any command for the first time, the CLI will:
 ## 🐛 Troubleshooting
 
 ### No tasks found or API Errors
+
 - Ensure the Laravel API is running at https://simple-task-api-88g5.onrender.com/
 - Check your internet connection
 - Verify the API endpoint is accessible
 
 ### CLI errors
+
 - Ensure all dependencies are installed: `npm install`
 - Make sure you're using Node.js version 16 or higher
 - If installed globally, try reinstalling: `npm uninstall -g task-tracker-cli && npm install -g .`
 
 ### Command not found
+
 - If using global installation, ensure the package is installed globally: `npm install -g .`
 - Try running with node directly: `node tracker.js <command>`
 

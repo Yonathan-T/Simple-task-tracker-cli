@@ -5,12 +5,39 @@ import { getAllTasks, createTask, completeTask, deleteTask, completed, pending }
 import chalk from 'chalk';
 
 const program = new Command();
+function getTerminalWidth() {
+  return process.stdout.columns || 80;
+}
 
-program
+      
+
+const BigBanner = `
+████████╗ █████╗ ███████╗██╗  ██╗    ████████╗██████╗  █████╗  ██████╗██╗  ██╗███████╗██████╗ 
+╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝    ╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██║ ██╔╝██╔════╝██╔══██╗
+  ██║   ███████║███████╗█████╔╝        ██║   ██████╔╝███████║██║     █████╔╝ █████╗  ██████╔╝
+  ██║   ██╔══██║╚════██║██╔═██╗        ██║   ██╔══██╗██╔══██║██║     ██╔═██╗ ██╔══╝  ██╔══██╗
+  ██║   ██║  ██║███████║██║  ██╗       ██║   ██║  ██║██║  ██║╚██████╗██║  ██╗███████╗██║  ██║
+  ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝       ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+                                                                                             
+                                                                                
+`
+const smallBanner = `
+▀█▀ ▄▀█ █▀ █▄▀   ▀█▀ █▀█ ▄▀█ █▀▀ █▄▀ █▀▀ █▀█
+░█░ █▀█ ▄█ █░█   ░█░ █▀▄ █▀█ █▄▄ █░█ ██▄ █▀▄                                                                               
+`
+ const terminalWidth = getTerminalWidth();
+const banner =
+  terminalWidth >= 120 ? BigBanner : smallBanner;
+
+  program
   .name('task-tracker')
-  .description(chalk.blue.bold('📋 Task Tracker CLI - A simple command-line task management tool'))
-  .version('1.0.0', '-v, --version', 'Display version information')
+  .description('📋 Task Tracker CLI — a simple command-line task manager')
+  .version('1.2.0', '-v, --version', 'Display version information')
   .option('-a, --about', 'Show detailed information about the CLI tool')
+  .addHelpText(
+    'before',
+    chalk.blue.bold(banner)
+  )
   .addHelpText('after', `
 ${chalk.yellow('Examples:')}
   $ task-tracker list                    # List all tasks
